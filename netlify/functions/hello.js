@@ -45,7 +45,7 @@ exports.handler = async (event, context) => {
                 console.error(`Error fetching ch3plus data: ${error}`);
                 return {
                     statusCode: 500,
-                    body: JSON.stringify({ error: 'Failed to fetch data' }),
+                    body: JSON.stringify({ error: 'Failed to fetch data', e:error }),
                 };
             }
         } else {
