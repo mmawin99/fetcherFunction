@@ -1,10 +1,4 @@
-// hello there!
-// 
-// I'm a serverless function that you can deploy as part of your site.
-// I'll get deployed to AWS Lambda, but you don't need to know that. 
-// You can develop and deploy serverless functions right here as part
-// of your site. Netlify Functions will handle the rest for you.
-
+const axios = require('axios');
 
 exports.handler = async (event, context) => {
     // Check bearer token
@@ -20,8 +14,7 @@ exports.handler = async (event, context) => {
         const params = event.queryStringParameters || {};
         if (params.type === "3plus") {
             try {
-                const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-                const response = await fetch("https://api-ch3plus.mello.me/api/home", {
+                const response = await axios.get("https://api-ch3plus.mello.me/api/home", {
                     headers: {
                         'accept-language': 'en,th;q=0.9,en-US;q=0.8',
                         'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Microsoft Edge";v="126"',
@@ -32,20 +25,15 @@ exports.handler = async (event, context) => {
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
                 return {
                     statusCode: 200,
-                    body: JSON.stringify(result),
+                    body: JSON.stringify(response.data),
                 };
             } catch (error) {
                 console.error(`Error fetching ch3plus data: ${error}`);
                 return {
                     statusCode: 500,
-                    body: JSON.stringify({ error: 'Failed to fetch data', e:error }),
+                    body: JSON.stringify({ error: 'Failed to fetch data', e: error }),
                 };
             }
         } else {
@@ -56,9 +44,8 @@ exports.handler = async (event, context) => {
         }
     } else if (event.httpMethod === 'POST') {
         try {
-            const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-            const response = await fetch('https://monomax.me');
-            const html = await response.text();
+            const response = await axios.get('https://monomax.me');
+            const html = response.data;
             return {
                 statusCode: 200,
                 body: JSON.stringify({ html }),
